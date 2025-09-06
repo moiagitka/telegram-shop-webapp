@@ -203,7 +203,8 @@ async function makeAPIRequest(endpoint, options = {}) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
         }
     };
     
