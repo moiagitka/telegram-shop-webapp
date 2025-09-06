@@ -4,7 +4,7 @@ const tg = window.Telegram?.WebApp;
 // Configuration
 const CONFIG = {
   bot_token: "1742846566:AAGXMHYJr3kPi71dCwAYzOzWns24OtxWJgM",
-  webhook_url: "https://fe074be00d23.ngrok-free.app",
+  webhook_url: "https://07e5697df50a.ngrok-free.app",
   admin_chat_id: "221933064",
   payment_provider_token: "YOUR_PAYMENT_TOKEN",
   app_name: "ShopTG",
