@@ -70,7 +70,7 @@ let currentUser = {
   username: "",
   balance: 0,
   bonus_points: 0,
-  is_admin: false
+  is_admin: true
 };
 
 let cart = [];
