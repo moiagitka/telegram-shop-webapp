@@ -11,7 +11,7 @@ const CONFIG = {
   currency: "RUB",
   delivery_price: 300,
   free_delivery_from: 5000,
-  admin_users: [111111111, 222222222]
+  admin_users: [221933064, 222222222]
 };
 
 // Application Data with working images
