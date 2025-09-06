@@ -14,7 +14,7 @@
             <div class="header__content">
                 <h1 class="header__logo">ShopTG</h1>
                 <div class="header__user">
-                    <span id="userBalance" class="user-balance">Баланс: 5000₽</span>
+                    <span id="userBalance" class="user-balance">Загрузка...</span>
                 </div>
             </div>
         </header>
@@ -25,11 +25,13 @@
             <div id="home" class="page active">
                 <div class="welcome">
                     <h2>Добро пожаловать в ShopTG!</h2>
-                    <p>Лучший интернет-магазин в Telegram</p>
+                    <p id="welcomeUser">Загрузка...</p>
                 </div>
                 <section class="latest-products">
-                    <h3>Последние товары</h3>
-                    <div id="latestProducts" class="products-grid"></div>
+                    <h3>Популярные товары</h3>
+                    <div id="latestProducts" class="products-grid">
+                        <div class="loading">Загрузка товаров...</div>
+                    </div>
                 </section>
             </div>
 
@@ -40,14 +42,14 @@
                     <button id="backToCategories" class="btn btn--secondary btn--sm hidden">← Назад к категориям</button>
                 </div>
                 <div id="categoriesList" class="categories-grid">
-                    <!-- Categories will be inserted here -->
+                    <div class="loading">Загрузка категорий...</div>
                 </div>
                 <div id="categoryProducts" class="products-section hidden">
                     <div class="filters">
                         <div class="filter-group">
                             <label>Цена до:</label>
-                            <input type="range" id="priceFilter" min="0" max="20000" value="20000">
-                            <span id="priceValue">20000₽</span>
+                            <input type="range" id="priceFilter" min="0" max="50000" value="50000">
+                            <span id="priceValue">50000₽</span>
                         </div>
                     </div>
                     <div id="productsGrid" class="products-grid"></div>
@@ -76,20 +78,29 @@
             <div id="profile" class="page">
                 <div class="profile-header">
                     <h2>Профиль</h2>
+                    <div id="profileUser" class="profile-user-info">
+                        <div class="user-avatar">👤</div>
+                        <div class="user-details">
+                            <div id="userName">Загрузка...</div>
+                            <div id="userTelegram">@loading...</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="profile-info">
                     <div class="info-card">
                         <h3>Баланс</h3>
-                        <span class="balance" id="profileBalance">5000₽</span>
+                        <span class="balance" id="profileBalance">Загрузка...</span>
                     </div>
                     <div class="info-card">
                         <h3>Бонусы</h3>
-                        <span class="bonus" id="profileBonus">150 баллов</span>
+                        <span class="bonus" id="profileBonus">Загрузка...</span>
                     </div>
                 </div>
                 <div class="order-history">
                     <h3>История заказов</h3>
-                    <div id="orderHistory" class="orders-list"></div>
+                    <div id="orderHistory" class="orders-list">
+                        <div class="loading">Загрузка заказов...</div>
+                    </div>
                 </div>
             </div>
 
@@ -97,15 +108,21 @@
             <div id="admin" class="page">
                 <h2>Админ панель</h2>
                 <div class="admin-tabs">
-                    <button id="adminProductsTab" class="tab-btn active">Товары</button>
-                    <button id="adminOrdersTab" class="tab-btn">Заказы</button>
+                    <button id="adminOrdersTab" class="tab-btn active">Заказы</button>
+                    <button id="adminUsersTab" class="tab-btn">Пользователи</button>
                 </div>
-                <div id="adminProducts" class="admin-section">
-                    <button id="addProductBtn" class="btn btn--primary">Добавить товар</button>
-                    <div id="adminProductsList" class="admin-products-list"></div>
+                <div id="adminOrders" class="admin-section">
+                    <div class="admin-filters">
+                        <button class="btn btn--secondary btn--sm" onclick="loadAdminOrders()">🔄 Обновить</button>
+                    </div>
+                    <div id="adminOrdersList" class="admin-orders-list">
+                        <div class="loading">Загрузка заказов...</div>
+                    </div>
                 </div>
-                <div id="adminOrders" class="admin-section hidden">
-                    <div id="adminOrdersList" class="admin-orders-list"></div>
+                <div id="adminUsers" class="admin-section hidden">
+                    <div id="adminUsersList" class="admin-users-list">
+                        <div class="loading">Загрузка пользователей...</div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -156,69 +173,54 @@
             <h3>Оформление заказа</h3>
             <form id="checkoutForm">
                 <div class="form-group">
-                    <label class="form-label">Номер телефона</label>
-                    <input type="tel" id="phone" class="form-control" required>
+                    <label class="form-label">Номер телефона *</label>
+                    <input type="tel" id="phone" class="form-control" required placeholder="+7 (xxx) xxx-xx-xx">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Telegram username</label>
-                    <input type="text" id="telegram" class="form-control" required>
+                    <label class="form-label">Telegram username *</label>
+                    <input type="text" id="telegram" class="form-control" required readonly>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Адрес доставки</label>
-                    <textarea id="address" class="form-control" required></textarea>
+                    <label class="form-label">Адрес доставки *</label>
+                    <textarea id="address" class="form-control" required placeholder="Город, улица, дом, квартира"></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">ФИО</label>
+                    <label class="form-label">ФИО *</label>
                     <input type="text" id="fullName" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Скриншот оплаты</label>
-                    <input type="file" id="paymentScreenshot" class="form-control" accept="image/*">
+                    <label class="form-label">Комментарий к заказу</label>
+                    <textarea id="orderComment" class="form-control" placeholder="Дополнительные пожелания"></textarea>
                 </div>
-                <div class="checkout-total">
-                    <strong>К оплате: <span id="checkoutTotal">0₽</span></strong>
+                <div class="checkout-summary">
+                    <div class="checkout-items" id="checkoutItems"></div>
+                    <div class="checkout-total">
+                        <strong>К оплате: <span id="checkoutTotal">0₽</span></strong>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn--primary btn--full-width">Подтвердить заказ</button>
+                <button type="submit" class="btn btn--primary btn--full-width" id="submitOrderBtn">
+                    Подтвердить заказ
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- Add Product Modal (Admin) -->
-    <div id="addProductModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h3>Добавить товар</h3>
-            <form id="addProductForm">
-                <div class="form-group">
-                    <label class="form-label">Название</label>
-                    <input type="text" id="productName" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Цена</label>
-                    <input type="number" id="productPrice" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Категория</label>
-                    <select id="productCategory" class="form-control" required>
-                        <option value="">Выберите категорию</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Описание</label>
-                    <textarea id="productDescription" class="form-control"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Размеры (через запятую)</label>
-                    <input type="text" id="productSizes" class="form-control" placeholder="S,M,L,XL">
-                </div>
-                <button type="submit" class="btn btn--primary btn--full-width">Добавить товар</button>
-            </form>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <div id="loadingText">Загрузка...</div>
         </div>
     </div>
 
-    <!-- Notification Toast -->
+    <!-- Toast Notification -->
     <div id="toast" class="toast hidden">
         <span id="toastMessage"></span>
+    </div>
+
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status">
+        <span id="statusText">🔄 Подключение...</span>
     </div>
 
     <script src="app.js"></script>
