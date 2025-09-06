@@ -5,7 +5,7 @@ const tg = window.Telegram?.WebApp;
 const CONFIG = {
   bot_token: "1742846566:AAGXMHYJr3kPi71dCwAYzOzWns24OtxWJgM",
   webhook_url: "https://moiagitka.github.io/telegram-shop-webapp/",
-  admin_chat_id: "YOUR_ADMIN_CHAT_ID",
+  admin_chat_id: "221933064",
   payment_provider_token: "YOUR_PAYMENT_TOKEN",
   app_name: "ShopTG",
   currency: "RUB",
