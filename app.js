@@ -1,4 +1,10 @@
 // Telegram WebApp Store - Main Application Logic
+
+const API_CONFIG = {
+    BASE_URL: 'https://c36e7a7fc2e4.ngrok-free.app/api'
+};
+
+
 class TelegramStore {
     constructor() {
         this.tg = window.Telegram?.WebApp;
