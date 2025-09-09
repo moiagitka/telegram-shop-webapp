@@ -87,6 +87,7 @@ class TelegramStore {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',  // ← ОБХОД ПРЕДУПРЕЖДЕНИЯ
                     ...options.headers
                 },
                 body: options.body ? JSON.stringify(options.body) : undefined,
