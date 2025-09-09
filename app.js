@@ -1,7 +1,7 @@
 // 🔧 КОНФИГУРАЦИЯ API - ИЗМЕНИТЕ ЭТУ ССЫЛКУ НА ВАШ NGROK URL
 const API_CONFIG = {
     // ⚠️ ВАЖНО: Замените на ваш ngrok URL после запуска C# бэкэнда
-    BASE_URL: 'https://c36e7a7fc2e4.ngrok-free.app/api,
+    BASE_URL: 'https://c36e7a7fc2e4.ngrok-free.app/api',
 
     // Пример: 'https://abc123.ngrok.io/api'
     // Для тестирования локально: 'http://localhost:5000/api'
