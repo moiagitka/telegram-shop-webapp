@@ -12,23 +12,48 @@
         <!-- Header -->
         <header class="header">
             <div class="header__content">
-                <h1 class="header__logo">ShopTG</h1>
+                <h1 class="header__logo">ShopTG ✨</h1>
                 <div class="header__user">
                     <span id="userBalance" class="user-balance">Загрузка...</span>
                 </div>
             </div>
         </header>
 
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск товаров...">
+                <button id="searchBtn" class="search-btn">Найти</button>
+            </div>
+        </div>
+
         <!-- Main Content -->
         <main class="main">
             <!-- Home Page -->
             <div id="home" class="page active">
                 <div class="welcome">
-                    <h2>Добро пожаловать в ShopTG!</h2>
+                    <h2>🎉 Добро пожаловать в ShopTG!</h2>
                     <p id="welcomeUser">Загрузка...</p>
                 </div>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="showPage('catalog'); updateActiveNavItem('catalog');">
+                        <span class="quick-action-icon">📎</span>
+                        <span>Каталог</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showPage('favorites'); updateActiveNavItem('favorites');">
+                        <span class="quick-action-icon">❤️</span>
+                        <span>Избранное</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showPage('profile'); updateActiveNavItem('profile');">
+                        <span class="quick-action-icon">👤</span>
+                        <span>Профиль</span>
+                    </button>
+                </div>
+                
                 <section class="latest-products">
-                    <h3>Популярные товары</h3>
+                    <h3>🔥 Популярные товары</h3>
                     <div id="latestProducts" class="products-grid">
                         <div class="loading">Загрузка товаров...</div>
                     </div>
@@ -38,18 +63,36 @@
             <!-- Catalog Page -->
             <div id="catalog" class="page">
                 <div class="catalog-header">
-                    <h2>Каталог</h2>
+                    <h2>📎 Каталог</h2>
                     <button id="backToCategories" class="btn btn--secondary btn--sm hidden">← Назад к категориям</button>
                 </div>
+                
+                <!-- Categories Search -->
+                <div id="categoriesSearch" class="category-search">
+                    <input type="text" id="categorySearchInput" class="form-control" placeholder="🔍 Поиск по категориям...">
+                </div>
+                
                 <div id="categoriesList" class="categories-grid">
                     <div class="loading">Загрузка категорий...</div>
                 </div>
+                
                 <div id="categoryProducts" class="products-section hidden">
                     <div class="filters">
-                        <div class="filter-group">
-                            <label>Цена до:</label>
-                            <input type="range" id="priceFilter" min="0" max="50000" value="50000">
-                            <span id="priceValue">50000₽</span>
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label>Цена до:</label>
+                                <input type="range" id="priceFilter" min="0" max="50000" value="50000">
+                                <span id="priceValue">50000₽</span>
+                            </div>
+                            <div class="filter-group">
+                                <label>Сортировка:</label>
+                                <select id="sortFilter" class="form-control">
+                                    <option value="default">По умолчанию</option>
+                                    <option value="price-asc">Цена: по возрастанию</option>
+                                    <option value="price-desc">Цена: по убыванию</option>
+                                    <option value="name">По названию</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div id="productsGrid" class="products-grid"></div>
@@ -70,7 +113,26 @@
 
             <!-- Favorites Page -->
             <div id="favorites" class="page">
-                <h2>Избранное</h2>
+                <div class="favorites-header">
+                    <h2>❤️ Избранное</h2>
+                    <div class="favorites-actions">
+                        <button id="clearFavoritesBtn" class="btn btn--outline btn--sm hidden">🗑️ Очистить</button>
+                        <button id="addAllToCartBtn" class="btn btn--primary btn--sm hidden">🛍️ Все в корзину</button>
+                    </div>
+                </div>
+                
+                <!-- Favorites Stats -->
+                <div id="favoritesStats" class="favorites-stats hidden">
+                    <div class="stat-item">
+                        <span class="stat-label">Товаров:</span>
+                        <span id="favoritesCount" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Общая стоимость:</span>
+                        <span id="favoritesTotal" class="stat-value">0₽</span>
+                    </div>
+                </div>
+                
                 <div id="favoritesItems" class="products-grid"></div>
             </div>
 
@@ -106,22 +168,78 @@
 
             <!-- Admin Page -->
             <div id="admin" class="page">
-                <h2>Админ панель</h2>
+                <h2>⚙️ Админ панель</h2>
                 <div class="admin-tabs">
-                    <button id="adminOrdersTab" class="tab-btn active">Заказы</button>
-                    <button id="adminUsersTab" class="tab-btn">Пользователи</button>
+                    <button id="adminOrdersTab" class="tab-btn active">📄 Заказы</button>
+                    <button id="adminProductsTab" class="tab-btn">📦 Товары</button>
+                    <button id="adminUsersTab" class="tab-btn">👥 Пользователи</button>
+                    <button id="adminAnalyticsTab" class="tab-btn">📈 Аналитика</button>
                 </div>
+                
+                <!-- Orders Section -->
                 <div id="adminOrders" class="admin-section">
                     <div class="admin-filters">
                         <button class="btn btn--secondary btn--sm" onclick="loadAdminOrders()">🔄 Обновить</button>
+                        <select id="orderStatusFilter" class="form-control" style="width: auto; display: inline-block; margin-left: 8px;">
+                            <option value="all">Все статусы</option>
+                            <option value="В обработке">В обработке</option>
+                            <option value="Отправлен">Отправлен</option>
+                            <option value="Доставлен">Доставлен</option>
+                            <option value="Отменен">Отменен</option>
+                        </select>
                     </div>
                     <div id="adminOrdersList" class="admin-orders-list">
                         <div class="loading">Загрузка заказов...</div>
                     </div>
                 </div>
+                
+                <!-- Products Section -->
+                <div id="adminProducts" class="admin-section hidden">
+                    <div class="admin-filters">
+                        <button class="btn btn--primary btn--sm" onclick="openAddProductModal()">➕ Добавить товар</button>
+                        <button class="btn btn--secondary btn--sm" onclick="exportProducts()">📊 Экспорт</button>
+                        <input type="search" id="adminProductSearch" class="form-control" placeholder="🔍 Поиск товаров..." style="width: 200px; display: inline-block; margin-left: 8px;">
+                    </div>
+                    <div id="adminProductsList" class="admin-products-list"></div>
+                </div>
+                
+                <!-- Users Section -->
                 <div id="adminUsers" class="admin-section hidden">
                     <div id="adminUsersList" class="admin-users-list">
                         <div class="loading">Загрузка пользователей...</div>
+                    </div>
+                </div>
+                
+                <!-- Analytics Section -->
+                <div id="adminAnalytics" class="admin-section hidden">
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h4>📈 Продажи</h4>
+                            <div class="analytics-value" id="totalSales">0₽</div>
+                            <div class="analytics-label">Общая сумма</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h4>🛍️ Заказы</h4>
+                            <div class="analytics-value" id="totalOrders">0</div>
+                            <div class="analytics-label">Всего заказов</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h4>👥 Клиенты</h4>
+                            <div class="analytics-value" id="totalUsers">0</div>
+                            <div class="analytics-label">Уникальных клиентов</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h4>📦 Товары</h4>
+                            <div class="analytics-value" id="totalProducts">0</div>
+                            <div class="analytics-label">В каталоге</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-charts">
+                        <div class="chart-container">
+                            <h4>📉 Популярные категории</h4>
+                            <div id="categoryChart" class="chart"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -155,14 +273,78 @@
                 <span class="nav-text">Админ</span>
             </button>
         </nav>
+        
+        <!-- Floating Action Button -->
+        <button id="fab" class="fab hidden" title="Корзина">
+            🛍️
+        </button>
     </div>
 
     <!-- Modals -->
-    <!-- Product Modal -->
-    <div id="productModal" class="modal hidden">
+    <!-- Product Details Modal -->
+    <div id="productDetailsModal" class="modal hidden">
         <div class="modal-content">
             <button class="modal-close">&times;</button>
             <div id="productModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Product Management Modal -->
+    <div id="productModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 id="productModalTitle">Добавить товар</h3>
+            <form id="productForm">
+                <div class="form-group">
+                    <label class="form-label">Название *</label>
+                    <input type="text" id="productName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea id="productDescription" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Цена *</label>
+                    <input type="number" id="productPrice" class="form-control" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Категория *</label>
+                    <select id="productCategory" class="form-control" required>
+                        <option value="">Выберите категорию</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Размеры (через запятую)</label>
+                    <input type="text" id="productSizes" class="form-control" placeholder="S,M,L,XL или 40,41,42,43">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Изображение URL</label>
+                    <input type="url" id="productImage" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Скидка (%)</label>
+                    <input type="number" id="productDiscount" class="form-control" min="0" max="100" step="1">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="productInStock" checked>
+                        В наличии
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn--outline" onclick="closeModal('productModal')">Отмена</button>
+                    <button type="submit" class="btn btn--primary" id="saveProductBtn">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderDetailsModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3>Детали заказа</h3>
+            <div id="orderDetailsContent"></div>
         </div>
     </div>
 
@@ -191,6 +373,22 @@
                 <div class="form-group">
                     <label class="form-label">Комментарий к заказу</label>
                     <textarea id="orderComment" class="form-control" placeholder="Дополнительные пожелания"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Скриншот оплаты *</label>
+                    <div class="file-upload-container">
+                        <input type="file" id="paymentScreenshot" class="file-input" accept="image/*" required>
+                        <label for="paymentScreenshot" class="file-upload-label">
+                            <span class="upload-icon">📷</span>
+                            <span class="upload-text">Загрузить скриншот оплаты</span>
+                        </label>
+                        <div id="uploadPreview" class="upload-preview hidden">
+                            <img id="previewImage" src="" alt="Превью">
+                            <button type="button" class="remove-file-btn" onclick="removeUploadedFile()">&times;</button>
+                        </div>
+                    </div>
+                    <small class="form-help">Загрузите скриншот подтверждения оплаты (PNG, JPG, JPEG)</small>
                 </div>
                 <div class="checkout-summary">
                     <div class="checkout-items" id="checkoutItems"></div>
