@@ -1,7 +1,7 @@
 // 🔧 КОНФИГУРАЦИЯ API - ИЗМЕНИТЕ ЭТУ ССЫЛКУ НА ВАШ NGROK URL
 const API_CONFIG = {
     // ⚠️ ВАЖНО: Замените на ваш ngrok URL после запуска C# бэкэнда
-    BASE_URL: 'https://c36e7a7fc2e4.ngrok-free.app/api',
+    BASE_URL: 'https://c36e7a7fc2e4.ngrok-free.app/api,
 
     // Пример: 'https://abc123.ngrok.io/api'
     // Для тестирования локально: 'http://localhost:5000/api'
@@ -75,14 +75,15 @@ class TelegramStore {
         }
     }
 
-    // 🌐 БАЗОВЫЙ МЕТОД ДЛЯ API ЗАПРОСОВ
+    // 🌐 БАЗОВЫЙ МЕТОД ДЛЯ API ЗАПРОСОВ (ИСПРАВЛЕН!)
     async apiCall(endpoint, options = {}) {
         const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-        console.log(`🔗 API запрос: ${method || 'GET'} ${url}`);
+        const method = options.method || 'GET';
+        console.log(`🔗 API запрос: ${method} ${url}`);
 
         try {
             const response = await fetch(url, {
-                method: options.method || 'GET',
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -234,6 +235,39 @@ class TelegramStore {
                     inStock: false,
                     rating: 4.5,
                     reviewsCount: 67
+                },
+                {
+                    id: 4,
+                    name: "Рубашка деловая",
+                    price: 2800,
+                    category: "shirts",
+                    imageUrl: "https://via.placeholder.com/300x300/BD10E0/FFFFFF?text=Рубашка",
+                    description: "Элегантная рубашка для офиса",
+                    inStock: true,
+                    rating: 4.6,
+                    reviewsCount: 43
+                },
+                {
+                    id: 5,
+                    name: "Пальто осеннее",
+                    price: 7800,
+                    category: "outerwear",
+                    imageUrl: "https://via.placeholder.com/300x300/D0021B/FFFFFF?text=Пальто",
+                    description: "Стильное пальто для прохладной погоды",
+                    inStock: true,
+                    rating: 4.7,
+                    reviewsCount: 234
+                },
+                {
+                    id: 6,
+                    name: "Adidas Ultraboost",
+                    price: 8900,
+                    category: "sneakers",
+                    imageUrl: "https://via.placeholder.com/300x300/7ED321/FFFFFF?text=Adidas",
+                    description: "Инновационные кроссовки с технологией Boost",
+                    inStock: true,
+                    rating: 4.9,
+                    reviewsCount: 178
                 }
             ];
         }
