@@ -3,27 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopTG - Интернет магазин</title>
+    <title>ShopTG Pro - Премиум магазин</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="app">
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-logo">
+            <div class="logo-icon">🛍️</div>
+            <h1>ShopTG Pro</h1>
+            <div class="loading-animation">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app hidden" id="app">
         <!-- Header -->
         <header class="header">
             <div class="header__content">
-                <h1 class="header__logo">ShopTG ✨</h1>
-                <div class="header__user">
-                    <span id="userBalance" class="user-balance">Загрузка...</span>
+                <div class="header__left">
+                    <h1 class="header__logo" onclick="showPage('home')">
+                        <span class="logo-emoji">🛍️</span>
+                        ShopTG Pro
+                    </h1>
+                </div>
+                <div class="header__right">
+                    <div class="user-info">
+                        <div class="user-balance" id="userBalance">
+                            <span class="balance-icon">💳</span>
+                            <span class="balance-amount">Загрузка...</span>
+                        </div>
+                        <div class="user-points" id="userPoints">
+                            <span class="points-icon">⭐</span>
+                            <span class="points-amount" id="pointsAmount">0</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
 
         <!-- Search Bar -->
-        <div class="search-container">
-            <div class="search-box">
+        <div class="search-section">
+            <div class="search-container">
                 <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск товаров...">
-                <button id="searchBtn" class="search-btn">Найти</button>
+                <button class="search-filter-btn" id="searchFilterBtn" onclick="toggleSearchFilters()">
+                    <span>🎛️</span>
+                </button>
+            </div>
+            <div class="search-filters hidden" id="searchFilters">
+                <div class="filter-row">
+                    <select id="categoryFilter" class="form-control">
+                        <option value="">Все категории</option>
+                    </select>
+                    <select id="sortFilter" class="form-control">
+                        <option value="name">По названию</option>
+                        <option value="price-asc">Цена: по возрастанию</option>
+                        <option value="price-desc">Цена: по убыванию</option>
+                        <option value="rating">По рейтингу</option>
+                        <option value="discount">По скидке</option>
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <div class="price-range">
+                        <label>Цена до: <span id="priceRangeValue">200000₽</span></label>
+                        <input type="range" id="priceRange" min="0" max="200000" value="200000">
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -31,31 +79,52 @@
         <main class="main">
             <!-- Home Page -->
             <div id="home" class="page active">
-                <div class="welcome">
-                    <h2>🎉 Добро пожаловать в ShopTG!</h2>
-                    <p id="welcomeUser">Загрузка...</p>
+                <div class="welcome-banner">
+                    <div class="welcome-content">
+                        <h2 id="welcomeTitle">Добро пожаловать!</h2>
+                        <p id="welcomeSubtitle">Откройте для себя премиальные товары</p>
+                    </div>
+                    <div class="promo-section">
+                        <div class="promo-item" onclick="openPromoModal()">
+                            <span class="promo-icon">🎁</span>
+                            <span class="promo-text">Промокоды</span>
+                        </div>
+                        <div class="promo-item" onclick="showPage('compare')">
+                            <span class="promo-icon">⚖️</span>
+                            <span class="promo-text">Сравнение</span>
+                        </div>
+                        <div class="promo-item" onclick="showPage('history')">
+                            <span class="promo-icon">🕒</span>
+                            <span class="promo-text">История</span>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- Quick Actions -->
-                <div class="quick-actions">
-                    <button class="quick-action-btn" onclick="showPage('catalog'); updateActiveNavItem('catalog');">
-                        <span class="quick-action-icon">📎</span>
-                        <span>Каталог</span>
-                    </button>
-                    <button class="quick-action-btn" onclick="showPage('favorites'); updateActiveNavItem('favorites');">
-                        <span class="quick-action-icon">❤️</span>
-                        <span>Избранное</span>
-                    </button>
-                    <button class="quick-action-btn" onclick="showPage('profile'); updateActiveNavItem('profile');">
-                        <span class="quick-action-icon">👤</span>
-                        <span>Профиль</span>
-                    </button>
-                </div>
-                
-                <section class="latest-products">
-                    <h3>🔥 Популярные товары</h3>
-                    <div id="latestProducts" class="products-grid">
+
+                <section class="featured-products">
+                    <div class="section-header">
+                        <h3>🔥 Хиты продаж</h3>
+                        <button class="view-all-btn" onclick="showPage('catalog')">Все товары</button>
+                    </div>
+                    <div id="featuredProducts" class="products-grid">
                         <div class="loading">Загрузка товаров...</div>
+                    </div>
+                </section>
+
+                <section class="recommendations">
+                    <div class="section-header">
+                        <h3>💡 Рекомендации для вас</h3>
+                    </div>
+                    <div id="recommendedProducts" class="products-grid">
+                        <div class="loading">Загрузка рекомендаций...</div>
+                    </div>
+                </section>
+
+                <section class="categories-preview">
+                    <div class="section-header">
+                        <h3>📂 Популярные категории</h3>
+                    </div>
+                    <div id="categoriesPreview" class="categories-horizontal">
+                        <div class="loading">Загрузка категорий...</div>
                     </div>
                 </section>
             </div>
@@ -63,36 +132,22 @@
             <!-- Catalog Page -->
             <div id="catalog" class="page">
                 <div class="catalog-header">
-                    <h2>📎 Каталог</h2>
-                    <button id="backToCategories" class="btn btn--secondary btn--sm hidden">← Назад к категориям</button>
-                </div>
-                
-                <!-- Categories Search -->
-                <div id="categoriesSearch" class="category-search">
-                    <input type="text" id="categorySearchInput" class="form-control" placeholder="🔍 Поиск по категориям...">
+                    <h2>Каталог товаров</h2>
+                    <div class="catalog-actions">
+                        <button id="backToCategories" class="btn btn--secondary btn--sm hidden" onclick="resetCatalogView()">← Назад</button>
+                    </div>
                 </div>
                 
                 <div id="categoriesList" class="categories-grid">
                     <div class="loading">Загрузка категорий...</div>
                 </div>
-                
+
                 <div id="categoryProducts" class="products-section hidden">
-                    <div class="filters">
-                        <div class="filter-row">
-                            <div class="filter-group">
-                                <label>Цена до:</label>
-                                <input type="range" id="priceFilter" min="0" max="50000" value="50000">
-                                <span id="priceValue">50000₽</span>
-                            </div>
-                            <div class="filter-group">
-                                <label>Сортировка:</label>
-                                <select id="sortFilter" class="form-control">
-                                    <option value="default">По умолчанию</option>
-                                    <option value="price-asc">Цена: по возрастанию</option>
-                                    <option value="price-desc">Цена: по убыванию</option>
-                                    <option value="name">По названию</option>
-                                </select>
-                            </div>
+                    <div class="products-toolbar">
+                        <div class="products-count" id="productsCount"></div>
+                        <div class="view-toggle">
+                            <button class="view-btn active" onclick="setProductView('grid')">⊞</button>
+                            <button class="view-btn" onclick="setProductView('list')">☰</button>
                         </div>
                     </div>
                     <div id="productsGrid" class="products-grid"></div>
@@ -101,144 +156,199 @@
 
             <!-- Cart Page -->
             <div id="cart" class="page">
-                <h2>Корзина</h2>
-                <div id="cartItems" class="cart-items"></div>
-                <div class="cart-total">
-                    <div class="total-price">
-                        <strong>Итого: <span id="cartTotal">0₽</span></strong>
+                <div class="page-header">
+                    <h2>🛒 Корзина</h2>
+                    <button class="clear-cart-btn" onclick="clearCart()" id="clearCartBtn">Очистить</button>
+                </div>
+
+                <div class="cart-content">
+                    <div id="cartItems" class="cart-items"></div>
+                    
+                    <div class="cart-summary" id="cartSummary">
+                        <div class="promo-code-section">
+                            <div class="promo-input-group">
+                                <input type="text" id="promoCodeInput" placeholder="Введите промокод" class="form-control">
+                                <button class="btn btn--secondary" onclick="applyPromoCode()">Применить</button>
+                            </div>
+                            <div class="active-promos" id="activePromos"></div>
+                        </div>
+                        
+                        <div class="order-summary">
+                            <div class="summary-row">
+                                <span>Товары:</span>
+                                <span id="itemsTotal">0₽</span>
+                            </div>
+                            <div class="summary-row" id="discountRow" style="display: none;">
+                                <span class="discount">Скидка:</span>
+                                <span class="discount" id="discountAmount">-0₽</span>
+                            </div>
+                            <div class="summary-row" id="deliveryRow">
+                                <span>Доставка:</span>
+                                <span id="deliveryAmount">300₽</span>
+                            </div>
+                            <div class="summary-row summary-total">
+                                <strong>Итого: <span id="cartTotal">0₽</span></strong>
+                            </div>
+                        </div>
+                        
+                        <button id="checkoutBtn" class="btn btn--primary btn--full-width" onclick="openCheckoutModal()">
+                            Оформить заказ
+                        </button>
                     </div>
-                    <button id="checkoutBtn" class="btn btn--primary btn--full-width">Оформить заказ</button>
                 </div>
             </div>
 
             <!-- Favorites Page -->
             <div id="favorites" class="page">
-                <div class="favorites-header">
+                <div class="page-header">
                     <h2>❤️ Избранное</h2>
                     <div class="favorites-actions">
-                        <button id="clearFavoritesBtn" class="btn btn--outline btn--sm hidden">🗑️ Очистить</button>
-                        <button id="addAllToCartBtn" class="btn btn--primary btn--sm hidden">🛍️ Все в корзину</button>
+                        <button class="btn btn--outline btn--sm" onclick="clearFavorites()">Очистить все</button>
                     </div>
                 </div>
-                
-                <!-- Favorites Stats -->
-                <div id="favoritesStats" class="favorites-stats hidden">
-                    <div class="stat-item">
-                        <span class="stat-label">Товаров:</span>
-                        <span id="favoritesCount" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Общая стоимость:</span>
-                        <span id="favoritesTotal" class="stat-value">0₽</span>
-                    </div>
-                </div>
-                
                 <div id="favoritesItems" class="products-grid"></div>
+            </div>
+
+            <!-- Compare Page -->
+            <div id="compare" class="page">
+                <div class="page-header">
+                    <h2>⚖️ Сравнение товаров</h2>
+                    <button class="btn btn--outline btn--sm" onclick="clearComparison()" id="clearCompareBtn">Очистить</button>
+                </div>
+                <div id="compareItems" class="compare-container"></div>
+            </div>
+
+            <!-- History Page -->
+            <div id="history" class="page">
+                <div class="page-header">
+                    <h2>🕒 История просмотров</h2>
+                    <button class="btn btn--outline btn--sm" onclick="clearHistory()">Очистить</button>
+                </div>
+                <div id="historyItems" class="products-grid"></div>
+            </div>
+
+            <!-- Support Page -->
+            <div id="support" class="page">
+                <div class="page-header">
+                    <h2>💬 Поддержка</h2>
+                </div>
+                <div class="support-content">
+                    <div class="chat-container" id="chatContainer">
+                        <div class="chat-messages" id="chatMessages"></div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chatInput" placeholder="Введите сообщение..." class="form-control">
+                            <button class="btn btn--primary" onclick="sendMessage()">Отправить</button>
+                        </div>
+                    </div>
+                    <div class="support-actions">
+                        <button class="btn btn--outline" onclick="showOrderTracking()">📦 Отследить заказ</button>
+                        <button class="btn btn--outline" onclick="showFAQ()">❓ Частые вопросы</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Profile Page -->
             <div id="profile" class="page">
                 <div class="profile-header">
-                    <h2>Профиль</h2>
-                    <div id="profileUser" class="profile-user-info">
-                        <div class="user-avatar">👤</div>
-                        <div class="user-details">
-                            <div id="userName">Загрузка...</div>
-                            <div id="userTelegram">@loading...</div>
+                    <div class="profile-avatar">
+                        <div class="avatar-circle" id="userAvatar">👤</div>
+                        <div class="profile-info">
+                            <h3 id="userName">Загрузка...</h3>
+                            <p id="userTelegram">@loading...</p>
+                            <div class="loyalty-status" id="loyaltyStatus">
+                                <span class="loyalty-icon">👑</span>
+                                <span>Статус: Новичок</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="profile-info">
-                    <div class="info-card">
-                        <h3>Баланс</h3>
-                        <span class="balance" id="profileBalance">Загрузка...</span>
+
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">💳</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="profileBalance">0₽</div>
+                            <div class="stat-label">Баланс</div>
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <h3>Бонусы</h3>
-                        <span class="bonus" id="profileBonus">Загрузка...</span>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="profileBonus">0</div>
+                            <div class="stat-label">Бонусы</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="ordersCount">0</div>
+                            <div class="stat-label">Заказов</div>
+                        </div>
                     </div>
                 </div>
-                <div class="order-history">
-                    <h3>История заказов</h3>
-                    <div id="orderHistory" class="orders-list">
-                        <div class="loading">Загрузка заказов...</div>
+
+                <div class="profile-sections">
+                    <div class="profile-section">
+                        <h4>📋 История заказов</h4>
+                        <div id="orderHistory" class="orders-list">
+                            <div class="loading">Загрузка заказов...</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h4>🔔 Уведомления</h4>
+                        <div class="notification-settings">
+                            <label class="setting-item">
+                                <input type="checkbox" checked> Уведомления о скидках
+                            </label>
+                            <label class="setting-item">
+                                <input type="checkbox" checked> Уведомления о поступлении товаров
+                            </label>
+                            <label class="setting-item">
+                                <input type="checkbox"> SMS уведомления
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Admin Page -->
             <div id="admin" class="page">
-                <h2>⚙️ Админ панель</h2>
-                <div class="admin-tabs">
-                    <button id="adminOrdersTab" class="tab-btn active">📄 Заказы</button>
-                    <button id="adminProductsTab" class="tab-btn">📦 Товары</button>
-                    <button id="adminUsersTab" class="tab-btn">👥 Пользователи</button>
-                    <button id="adminAnalyticsTab" class="tab-btn">📈 Аналитика</button>
+                <div class="page-header">
+                    <h2>⚙️ Админ панель</h2>
                 </div>
-                
-                <!-- Orders Section -->
-                <div id="adminOrders" class="admin-section">
-                    <div class="admin-filters">
-                        <button class="btn btn--secondary btn--sm" onclick="loadAdminOrders()">🔄 Обновить</button>
-                        <select id="orderStatusFilter" class="form-control" style="width: auto; display: inline-block; margin-left: 8px;">
-                            <option value="all">Все статусы</option>
-                            <option value="В обработке">В обработке</option>
-                            <option value="Отправлен">Отправлен</option>
-                            <option value="Доставлен">Доставлен</option>
-                            <option value="Отменен">Отменен</option>
-                        </select>
+                <div class="admin-content">
+                    <div class="admin-tabs">
+                        <button class="tab-btn active" id="adminOrdersTab" onclick="switchAdminTab('orders')">Заказы</button>
+                        <button class="tab-btn" id="adminUsersTab" onclick="switchAdminTab('users')">Пользователи</button>
+                        <button class="tab-btn" id="adminStatsTab" onclick="switchAdminTab('stats')">Статистика</button>
                     </div>
-                    <div id="adminOrdersList" class="admin-orders-list">
-                        <div class="loading">Загрузка заказов...</div>
-                    </div>
-                </div>
-                
-                <!-- Products Section -->
-                <div id="adminProducts" class="admin-section hidden">
-                    <div class="admin-filters">
-                        <button class="btn btn--primary btn--sm" onclick="openAddProductModal()">➕ Добавить товар</button>
-                        <button class="btn btn--secondary btn--sm" onclick="exportProducts()">📊 Экспорт</button>
-                        <input type="search" id="adminProductSearch" class="form-control" placeholder="🔍 Поиск товаров..." style="width: 200px; display: inline-block; margin-left: 8px;">
-                    </div>
-                    <div id="adminProductsList" class="admin-products-list"></div>
-                </div>
-                
-                <!-- Users Section -->
-                <div id="adminUsers" class="admin-section hidden">
-                    <div id="adminUsersList" class="admin-users-list">
-                        <div class="loading">Загрузка пользователей...</div>
-                    </div>
-                </div>
-                
-                <!-- Analytics Section -->
-                <div id="adminAnalytics" class="admin-section hidden">
-                    <div class="analytics-grid">
-                        <div class="analytics-card">
-                            <h4>📈 Продажи</h4>
-                            <div class="analytics-value" id="totalSales">0₽</div>
-                            <div class="analytics-label">Общая сумма</div>
+                    <div class="admin-section" id="adminOrders">
+                        <div class="admin-controls">
+                            <button class="btn btn--secondary" onclick="loadAdminData()">🔄 Обновить</button>
                         </div>
-                        <div class="analytics-card">
-                            <h4>🛍️ Заказы</h4>
-                            <div class="analytics-value" id="totalOrders">0</div>
-                            <div class="analytics-label">Всего заказов</div>
-                        </div>
-                        <div class="analytics-card">
-                            <h4>👥 Клиенты</h4>
-                            <div class="analytics-value" id="totalUsers">0</div>
-                            <div class="analytics-label">Уникальных клиентов</div>
-                        </div>
-                        <div class="analytics-card">
-                            <h4>📦 Товары</h4>
-                            <div class="analytics-value" id="totalProducts">0</div>
-                            <div class="analytics-label">В каталоге</div>
+                        <div id="adminOrdersList" class="admin-orders-list">
+                            <div class="loading">Загрузка заказов...</div>
                         </div>
                     </div>
-                    
-                    <div class="analytics-charts">
-                        <div class="chart-container">
-                            <h4>📉 Популярные категории</h4>
-                            <div id="categoryChart" class="chart"></div>
+                    <div class="admin-section hidden" id="adminUsers">
+                        <div id="adminUsersList" class="admin-users-list">
+                            <div class="loading">Загрузка пользователей...</div>
+                        </div>
+                    </div>
+                    <div class="admin-section hidden" id="adminStats">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4>📊 Общая статистика</h4>
+                                <div class="stat-row">
+                                    <span>Всего заказов:</span>
+                                    <strong id="totalOrders">0</strong>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Общая сумма:</span>
+                                    <strong id="totalRevenue">0₽</strong>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -263,6 +373,11 @@
             <button class="nav-item" data-page="favorites">
                 <span class="nav-icon">❤️</span>
                 <span class="nav-text">Избранное</span>
+                <span id="favoritesBadge" class="favorites-badge hidden">0</span>
+            </button>
+            <button class="nav-item" data-page="support">
+                <span class="nav-icon">💬</span>
+                <span class="nav-text">Поддержка</span>
             </button>
             <button class="nav-item" data-page="profile">
                 <span class="nav-icon">👤</span>
@@ -273,78 +388,14 @@
                 <span class="nav-text">Админ</span>
             </button>
         </nav>
-        
-        <!-- Floating Action Button -->
-        <button id="fab" class="fab hidden" title="Корзина">
-            🛍️
-        </button>
     </div>
 
     <!-- Modals -->
-    <!-- Product Details Modal -->
-    <div id="productDetailsModal" class="modal hidden">
-        <div class="modal-content">
+    <!-- Product Modal -->
+    <div id="productModal" class="modal hidden">
+        <div class="modal-content product-modal">
             <button class="modal-close">&times;</button>
             <div id="productModalContent"></div>
-        </div>
-    </div>
-
-    <!-- Product Management Modal -->
-    <div id="productModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h3 id="productModalTitle">Добавить товар</h3>
-            <form id="productForm">
-                <div class="form-group">
-                    <label class="form-label">Название *</label>
-                    <input type="text" id="productName" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Описание</label>
-                    <textarea id="productDescription" class="form-control"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Цена *</label>
-                    <input type="number" id="productPrice" class="form-control" min="0" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Категория *</label>
-                    <select id="productCategory" class="form-control" required>
-                        <option value="">Выберите категорию</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Размеры (через запятую)</label>
-                    <input type="text" id="productSizes" class="form-control" placeholder="S,M,L,XL или 40,41,42,43">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Изображение URL</label>
-                    <input type="url" id="productImage" class="form-control" placeholder="https://example.com/image.jpg">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Скидка (%)</label>
-                    <input type="number" id="productDiscount" class="form-control" min="0" max="100" step="1">
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="productInStock" checked>
-                        В наличии
-                    </label>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn--outline" onclick="closeModal('productModal')">Отмена</button>
-                    <button type="submit" class="btn btn--primary" id="saveProductBtn">Сохранить</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Order Details Modal -->
-    <div id="orderDetailsModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h3>Детали заказа</h3>
-            <div id="orderDetailsContent"></div>
         </div>
     </div>
 
@@ -352,55 +403,141 @@
     <div id="checkoutModal" class="modal hidden">
         <div class="modal-content">
             <button class="modal-close">&times;</button>
-            <h3>Оформление заказа</h3>
+            <div class="checkout-header">
+                <h3>🛒 Оформление заказа</h3>
+                <div class="checkout-steps">
+                    <div class="step active">1</div>
+                    <div class="step-line"></div>
+                    <div class="step">2</div>
+                    <div class="step-line"></div>
+                    <div class="step">3</div>
+                </div>
+            </div>
             <form id="checkoutForm">
                 <div class="form-group">
-                    <label class="form-label">Номер телефона *</label>
-                    <input type="tel" id="phone" class="form-control" required placeholder="+7 (xxx) xxx-xx-xx">
+                    <label class="form-label">📞 Номер телефона *</label>
+                    <input type="tel" id="phone" class="form-control" required placeholder="+7 (XXX) XXX-XX-XX">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Telegram username *</label>
+                    <label class="form-label">📱 Telegram username *</label>
                     <input type="text" id="telegram" class="form-control" required readonly>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Адрес доставки *</label>
+                    <label class="form-label">🏠 Адрес доставки *</label>
                     <textarea id="address" class="form-control" required placeholder="Город, улица, дом, квартира"></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">ФИО *</label>
+                    <label class="form-label">👤 ФИО *</label>
                     <input type="text" id="fullName" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Комментарий к заказу</label>
+                    <label class="form-label">💬 Комментарий к заказу</label>
                     <textarea id="orderComment" class="form-control" placeholder="Дополнительные пожелания"></textarea>
                 </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Скриншот оплаты *</label>
-                    <div class="file-upload-container">
-                        <input type="file" id="paymentScreenshot" class="file-input" accept="image/*" required>
-                        <label for="paymentScreenshot" class="file-upload-label">
-                            <span class="upload-icon">📷</span>
-                            <span class="upload-text">Загрузить скриншот оплаты</span>
-                        </label>
-                        <div id="uploadPreview" class="upload-preview hidden">
-                            <img id="previewImage" src="" alt="Превью">
-                            <button type="button" class="remove-file-btn" onclick="removeUploadedFile()">&times;</button>
+
+                <div class="checkout-summary">
+                    <h4>📦 Ваш заказ</h4>
+                    <div class="checkout-items" id="checkoutItems"></div>
+                    <div class="checkout-total-section">
+                        <div class="summary-row">
+                            <span>Товары:</span>
+                            <span id="checkoutItemsTotal">0₽</span>
+                        </div>
+                        <div class="summary-row" id="checkoutDiscountRow" style="display: none;">
+                            <span class="discount">Скидка:</span>
+                            <span class="discount" id="checkoutDiscountAmount">-0₽</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Доставка:</span>
+                            <span id="checkoutDeliveryAmount">300₽</span>
+                        </div>
+                        <div class="summary-row summary-total">
+                            <strong>К оплате: <span id="checkoutTotal">0₽</span></strong>
                         </div>
                     </div>
-                    <small class="form-help">Загрузите скриншот подтверждения оплаты (PNG, JPG, JPEG)</small>
                 </div>
-                <div class="checkout-summary">
-                    <div class="checkout-items" id="checkoutItems"></div>
-                    <div class="checkout-total">
-                        <strong>К оплате: <span id="checkoutTotal">0₽</span></strong>
-                    </div>
-                </div>
+
                 <button type="submit" class="btn btn--primary btn--full-width" id="submitOrderBtn">
-                    Подтвердить заказ
+                    <span class="btn-text">✅ Подтвердить заказ</span>
+                    <span class="btn-loading hidden">
+                        <span class="spinner-small"></span>
+                        Оформляем...
+                    </span>
                 </button>
             </form>
         </div>
+    </div>
+
+    <!-- Promo Modal -->
+    <div id="promoModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="promo-modal-content">
+                <h3>🎁 Промокоды и скидки</h3>
+                <div class="available-promos" id="availablePromos">
+                    <div class="promo-card">
+                        <div class="promo-badge">WELCOME10</div>
+                        <div class="promo-info">
+                            <div class="promo-title">Скидка 10% для новых пользователей</div>
+                            <div class="promo-desc">Действует на первый заказ</div>
+                        </div>
+                        <button class="btn btn--sm btn--outline" onclick="copyPromoCode('WELCOME10')">Копировать</button>
+                    </div>
+                    <div class="promo-card">
+                        <div class="promo-badge">SAVE500</div>
+                        <div class="promo-info">
+                            <div class="promo-title">500₽ скидка</div>
+                            <div class="promo-desc">При заказе от 5000₽</div>
+                        </div>
+                        <button class="btn btn--sm btn--outline" onclick="copyPromoCode('SAVE500')">Копировать</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="review-modal-content">
+                <h3>⭐ Оставить отзыв</h3>
+                <form id="reviewForm">
+                    <div class="rating-input">
+                        <label>Ваша оценка:</label>
+                        <div class="stars-input" id="starsInput">
+                            <span class="star" data-rating="1">⭐</span>
+                            <span class="star" data-rating="2">⭐</span>
+                            <span class="star" data-rating="3">⭐</span>
+                            <span class="star" data-rating="4">⭐</span>
+                            <span class="star" data-rating="5">⭐</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ваш отзыв</label>
+                        <textarea id="reviewText" class="form-control" rows="4" placeholder="Поделитесь впечатлениями о товаре..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Отправить отзыв</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div id="notificationsContainer" class="notifications-container"></div>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast hidden">
+        <div class="toast-content">
+            <span class="toast-icon" id="toastIcon">✅</span>
+            <span class="toast-message" id="toastMessage"></span>
+        </div>
+    </div>
+
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status">
+        <span class="status-icon">🔄</span>
+        <span id="statusText">Подключение...</span>
     </div>
 
     <!-- Loading overlay -->
@@ -409,16 +546,6 @@
             <div class="spinner"></div>
             <div id="loadingText">Загрузка...</div>
         </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast hidden">
-        <span id="toastMessage"></span>
-    </div>
-
-    <!-- Connection Status -->
-    <div id="connectionStatus" class="connection-status">
-        <span id="statusText">🔄 Подключение...</span>
     </div>
 
     <script src="app.js"></script>
