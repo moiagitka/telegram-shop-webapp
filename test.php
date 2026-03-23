@@ -1,4 +1,16 @@
 <?php
+// CORS заголовки ДО ВСЕГО остального кода!
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Max-Age: 86400'); // Кэш на 24 часа
+header('Content-Type: application/json; charset=utf-8');
+
+// Обработка preflight OPTIONS запроса
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit(0);
+}
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -6,7 +18,7 @@ header('Content-Type: application/json; charset=utf-8');
 $bot_token = $_REQUEST['bot_token'] ?? '';
 $chat_id   = $_REQUEST['chat_id']   ?? '';
 $message   = $_REQUEST['message']   ?? '';
-$parse_mode = $_REQUEST['parse_mode'] ?? 'HTML'; // HTML | Markdown | MarkdownV2
+$parse_mode = $_REQUEST['parse_mode'] ?? 'HTML';
 
 // Валидация
 $errors = [];
@@ -36,6 +48,7 @@ curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_SSL_VERIFYPEER => true,
     CURLOPT_TIMEOUT        => 10,
+    CURLOPT_USERAGENT      => 'TelegramProxy/1.0',
 ]);
 
 $result   = curl_exec($ch);
@@ -50,6 +63,8 @@ if ($curl_err) {
     exit;
 }
 
-// Возвращаем ответ Telegram как есть
+// Возвращаем ответ Telegram
 http_response_code($http_code);
+header('Access-Control-Allow-Origin: *'); // Повторяем для основного ответа
 echo $result;
+?>
